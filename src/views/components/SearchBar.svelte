@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { SortMode, ViewMode } from "../../lib/api/common";
-    import { searchTracks, sortTracks, type Track } from "../../lib/api/track";
+    import { searchTracks, type Track } from "../../lib/api/track";
 
     import { getContext } from "svelte";
 
@@ -22,7 +22,7 @@
 
     async function handleSort(by: SortMode) {
         tracks.list = [...tracks.list].sort((a, b) =>
-        a[by].localeCompare(b[by], undefined, { sensitivity: 'base' }))
+        a[by].localeCompare(b[by], undefined, { sensitivity: 'base' }));
     }
 
     function handleInputMulti(e: Event) {
@@ -38,7 +38,7 @@
     function handleInputSearch(e: Event) {
         const query = (e.target as HTMLInputElement).value;
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout( () => {handleSearch(query)}, 300);
+        debounceTimer = setTimeout( () => handleSearch(query), 300);
     }
 </script>
 

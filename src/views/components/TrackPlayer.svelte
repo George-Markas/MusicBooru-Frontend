@@ -3,7 +3,7 @@
     import { streamTrack } from "../../lib/api/track";
 
     let {trackId} = $props<string>();
-    let objectURL = $state<string>('')
+    let objectURL = $state<string>('');
 
     async function getStream(id: string) {
         try {
@@ -11,7 +11,7 @@
             if (response.ok) {
                 untrack(() => {
                     objectURL = URL.createObjectURL(response.data);
-                })
+                });
             }
         } catch (error) {
             console.error(error);
@@ -25,8 +25,8 @@
         return () => {
             untrack( () => {
                 URL.revokeObjectURL(objectURL);
-            })
-        }
+            });
+        };
     });
 </script>
 

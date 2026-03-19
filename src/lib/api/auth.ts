@@ -18,7 +18,7 @@ export async function authenticate(credentials: AuthRequest) : Promise<Result<st
     const response = await api<string>(path, {
             method: METHOD, 
             body: JSON.stringify(credentials)
-        })
+        });
 
     return response;
 }
@@ -27,16 +27,16 @@ export async function getSession() : Promise<Result<SessionData>> {
     const path = 'auth';
     const response = await api<SessionData>(path, {
             method: 'GET'
-        })
+        });
 
     return response;
 }
 
 export async function logout() : Promise<Result<string>> {
-    const path = 'auth/logout'
+    const path = 'auth/logout';
     const response = await api<string>(path, {
         method: METHOD
-    })
+    });
 
     return response;
 }

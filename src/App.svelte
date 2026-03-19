@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Login from './views/Login.svelte'
+    import Login from './views/Login.svelte';
     import { type AppState } from './lib/api/common';
 
     import { onMount, setContext } from 'svelte';
@@ -11,8 +11,6 @@
 
     const session = $state({username: '', role: ''} as SessionData);
     setContext('session', session);
-
-    $inspect(session);
 
     onMount( async () => {
         try {

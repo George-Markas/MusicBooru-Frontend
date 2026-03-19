@@ -11,7 +11,7 @@
 
     async function loadArt() {
         try {
-            const response = await getTrackArt(tracks[0].id)
+            const response = await getTrackArt(tracks[0].id);
             if (response.ok) {
                 cover = URL.createObjectURL(response.data);
             }
@@ -22,11 +22,11 @@
 
     onMount(async () => {
         loadArt();
-    })
+    });
 
     onDestroy(async () => {
         if (cover) {
-            console.log("Track gone")
+            console.log("Track gone");
             URL.revokeObjectURL(cover);
         }}
     );
@@ -39,7 +39,7 @@
     </button>
 
     <div class="popup" class:open={isOpen}>
-        <TrackList data={tracks} mode={'Track'}/>
+        <TrackList data={tracks} mode="Track"/>
     </div>
 </div>
 

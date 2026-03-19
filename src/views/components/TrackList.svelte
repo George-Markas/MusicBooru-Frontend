@@ -6,7 +6,7 @@
     let { data, mode } = $props<{
         mode: ViewMode
         data: Track[]
-    }>()
+    }>();
 
 </script>
 

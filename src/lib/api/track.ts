@@ -1,4 +1,4 @@
-import { api, type Result } from "./common"
+import { api, type Result } from "./common";
 
 export type Track = {
     id: string,
@@ -11,7 +11,7 @@ export type Track = {
 }
 
 export async function getTracks(): Promise<Result<Track[]>> {
-    const path = `track`
+    const path = `track`;
 
     const response = await api<Track[]>(path, {
         method: 'GET'
@@ -21,7 +21,7 @@ export async function getTracks(): Promise<Result<Track[]>> {
 }
 
 export async function searchTracks(query: string): Promise<Result<Track[]>> {
-    const path = `track/search`
+    const path = `track/search`;
 
     const response = await api<Track[]>(path, {
         method: 'GET'
@@ -31,7 +31,7 @@ export async function searchTracks(query: string): Promise<Result<Track[]>> {
 }
 
 export async function sortTracks(sortOption: string): Promise<Result<Track[]>> {
-    const path = `track/sort/${sortOption}`
+    const path = `track/sort/${sortOption}`;
 
     const response = await api<Track[]>(path, {
         method: 'GET'
@@ -41,7 +41,7 @@ export async function sortTracks(sortOption: string): Promise<Result<Track[]>> {
 }
 
 export async function getTrack(id: string): Promise<Result<Track>> {
-    const path = `track/${id}`
+    const path = `track/${id}`;
 
     const response = await api<Track>(path, {
         method: 'GET'
@@ -51,18 +51,18 @@ export async function getTrack(id: string): Promise<Result<Track>> {
 }
 
 export async function getTrackArt(id: string): Promise<Result<Blob>> {
-    const path = `track/${id}/art`
+    const path = `track/${id}/art`;
 
     const response = await api<Blob>(path, {
         method: 'GET',
         headers: {'Accept': 'image/jpeg'}
-    }, {params: '', as: 'blob'})
+    }, {params: '', as: 'blob'});
 
     return response;
 }
 
 export async function streamTrack(id: string): Promise<Result<Blob>> {
-    const path = `stream/${id}`
+    const path = `stream/${id}`;
 
     const response = await api<Blob>(path, {
         method: 'GET',
@@ -72,12 +72,12 @@ export async function streamTrack(id: string): Promise<Result<Blob>> {
 }
 
 export async function uploadTrack(form: FormData): Promise<Result<string>> {
-    const path = `track/batch`
+    const path = `track/batch`;
 
     const response = await api<string>(path, {
         method: 'POST',
         body: form,
-    })
+    });
 
     return response;
 }
