@@ -1,21 +1,31 @@
 <script lang="ts">
     import Login from './views/Login.svelte'
-    import { getTracks } from './lib/api/track';
     import { type AppState } from './lib/api/common';
 
     import { onMount, setContext } from 'svelte';
     import Home from './views/Home.svelte';
+    import { getSession, type SessionData } from './lib/api/auth';
 
     const app = $state({ page: 'loading' as AppState });
     setContext('app', app);
 
-    $inspect(app.page)
+    const session = $state({username: '', role: ''} as SessionData);
+    setContext('session', session);
+
+    $inspect(session);
 
     onMount( async () => {
         try {
-            const response = await getTracks();
-            if (response.ok) {app.page = 'home'}
-            else {app.page = 'login'; console.log("You are not the father!");}
+            const response = await getSession();
+            if (response.ok) {
+                app.page = 'home';
+                session.username = response.data.username;
+                session.role = response.data.role;
+            }
+            else {
+                app.page = 'login'; 
+            }
+
         } catch (error) {
             console.error(error);
         }
