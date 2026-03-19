@@ -70,3 +70,14 @@ export async function streamTrack(id: string): Promise<Result<Blob>> {
 
     return response;
 }
+
+export async function uploadTrack(form: FormData): Promise<Result<string>> {
+    const path = `track/batch`
+
+    const response = await api<string>(path, {
+        method: 'POST',
+        body: form,
+    })
+
+    return response;
+}
