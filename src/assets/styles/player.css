@@ -30,7 +30,6 @@
 }
 
 .player__seek-slider {
-    -webkit-appearance: none;
     appearance: none;
     flex: 1;
     height: 3px;
