@@ -45,8 +45,7 @@
 <div>
     <input
         type="search"
-        name="search bar"
-        placeholder="Search by title, album or artist..."
+        placeholder="Search from all tracks..."
         oninput={handleInputSearch}
     />
 
