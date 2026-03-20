@@ -6,6 +6,12 @@ interface AuthRequest {
     password: string;
 }
 
+export interface RegisterRequest {
+    username: string;
+    password: string;
+    role: 'ADMIN' | 'USER';
+}
+
 export interface SessionData {
     username: string;
     role: string;
@@ -23,11 +29,13 @@ export async function authenticate(credentials: AuthRequest) : Promise<Result<st
     return response;
 }
 
-export async function getSession() : Promise<Result<SessionData>> {
-    const path = 'auth';
-    const response = await api<SessionData>(path, {
-            method: 'GET'
-        });
+export async function register(credentials: RegisterRequest) : Promise<Result<string>> {
+    const path = 'auth/register';
+
+    const response = await api<string>(path, {
+        method: METHOD,
+        body: JSON.stringify(credentials)
+    });
 
     return response;
 }
@@ -37,6 +45,15 @@ export async function logout() : Promise<Result<string>> {
     const response = await api<string>(path, {
         method: METHOD
     });
+
+    return response;
+}
+
+export async function getSession() : Promise<Result<SessionData>> {
+    const path = 'auth';
+    const response = await api<SessionData>(path, {
+            method: 'GET'
+        });
 
     return response;
 }

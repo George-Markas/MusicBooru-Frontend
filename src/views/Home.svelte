@@ -9,6 +9,7 @@
     import TrackPlayer from "./components/TrackPlayer.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
+    import RegisterModal from "./components/RegisterModal.svelte";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
@@ -95,5 +96,5 @@
 {/if}
 
 <input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
-
+<RegisterModal/>
 <TrackPlayer trackId={streamTrack.id} />
