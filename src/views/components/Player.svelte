@@ -236,7 +236,7 @@
     <div class="player__bar">
         <div class="player__info">
             <span class="player__title-text">{title} {artist}</span>
-            <span class="player__index">{index + 1} / {queue.length}</span>
+            <span class="player__index">{queue.length > 0 ? `${index + 1} / ${queue.length}` : "- / -"}</span>
         </div>
 
         <div class="player__controls">

@@ -1,8 +1,7 @@
 <script lang="ts">
+    import { getContext } from "svelte";
     import type { SortMode, ViewMode } from "../../lib/api/common";
     import { searchTracks, type Track } from "../../lib/api/track";
-
-    import { getContext } from "svelte";
 
     let debounceTimer: ReturnType<typeof setTimeout>;
 
