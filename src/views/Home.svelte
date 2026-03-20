@@ -6,7 +6,7 @@
     import { logout, type SessionData } from "../lib/api/auth";
 
     import TrackList from "./components/TrackList.svelte";
-    import TrackPlayer from "./components/TrackPlayer.svelte";
+    // import TrackPlayer from "./components/TrackPlayer.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
     import RegisterModal from "./components/RegisterModal.svelte";
@@ -30,7 +30,7 @@
     );
 
     let streamTrack = $state({ id: "" });
-    setContext("stream", streamTrack);
+    setContext("streamTrack", streamTrack);
 
     let view = $state({ mode: "Track" as ViewMode });
     setContext("view", view);
@@ -88,7 +88,7 @@
 {#if view.mode === "Album"}
     <AlbumList {albums} />
 {:else}
-    <TrackList data={tracks.list}/>
+    <TrackList data={tracks.list} />
 {/if}
 
 {#if session.role === "ADMIN"}
@@ -96,5 +96,4 @@
 {/if}
 
 <input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
-<RegisterModal/>
-<TrackPlayer trackId={streamTrack.id} />
+<RegisterModal />

@@ -2,11 +2,15 @@
     import { getTrackArt, type Track } from "../../lib/api/track";
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
-    
-    let { tracks } = $props<{tracks: Track[]}>();
-    let cover = $state<string>('');
-    
-    let open = getContext<{name: string}>('openAlbum');
+
+    let { tracks } = $props<{ tracks: Track[] }>();
+    let cover = $state<string>("");
+
+    const trackCache = getContext<{ cache: Record<string, Track> }>(
+        "trackCache",
+    );
+
+    let open = getContext<{ name: string }>("openAlbum");
     let isOpen = $derived(open.name === tracks[0].album);
 
     async function loadArt() {
@@ -28,18 +32,25 @@
         if (cover) {
             console.log("Track gone");
             URL.revokeObjectURL(cover);
-        }}
-    );
+        }
+    });
 </script>
 
 <div class="album">
-    <button class="button" onclick={() => open.name = isOpen ? null : tracks[0].album }>    
-        <img src={cover} alt="cover"/>
+    <button
+        class="button"
+        ondblclick={() =>
+            (trackCache.cache = Object.fromEntries(
+                tracks.map((track: Track) => [track.id, track]),
+            ))}
+        onclick={() => (open.name = isOpen ? null : tracks[0].album)}
+    >
+        <img src={cover} alt="cover" />
         <span>{tracks[0].album}</span>
     </button>
 
     <div class="popup" class:open={isOpen}>
-        <TrackList data={tracks}/>
+        <TrackList data={tracks} />
     </div>
 </div>
 

@@ -66,7 +66,7 @@ export async function streamTrack(id: string): Promise<Result<Blob>> {
 
     const response = await api<Blob>(path, {
         method: 'GET',
-    }, {params: '', as: 'blob'});
+    }, {as: 'blob'});
 
     return response;
 }
