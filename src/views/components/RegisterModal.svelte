@@ -25,11 +25,21 @@
     <form onsubmit={handleSubmit}>
         <label>
             Username
-            <input type="text" bind:value={registerData.username} placeholder="Username" />
+            <input
+                type="text"
+                name="register field username"
+                bind:value={registerData.username}
+                placeholder="Username"
+            />
         </label>
         <label>
             Password
-            <input type="text" bind:value={registerData.password} placeholder="Password" />
+            <input
+                type="text"
+                name="register field password"
+                bind:value={registerData.password}
+                placeholder="Password"
+            />
         </label>
         <label>
             Admin
