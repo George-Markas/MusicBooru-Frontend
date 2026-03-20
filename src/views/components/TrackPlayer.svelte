@@ -12,7 +12,8 @@
     let method = $state<StreamMode>("normal");
     let volume = $state(1);
     let audioElement = $state<HTMLAudioElement | null>(null);
-
+    let volumeElement = $state<HTMLInputElement | null>(null);
+    let seekElement = $state<HTMLInputElement | null>(null);
     let currentTime = $state(0);
     let duration = $state(0);
     let isSeeking = $state(false);
@@ -55,6 +56,10 @@
         currentTime = audioElement.currentTime;
     });
 
+    $effect(() => {
+        volumeElement?.style.setProperty("--fill", `${volume * 100}%`);
+    });
+
     async function getStream(id: string) {
         try {
             const response = await streamTrack(id);
@@ -87,7 +92,7 @@
         };
     });
 
-    let title = $derived(tracks.cache[active.id]?.title ?? "No track queued");
+    let title = $derived(tracks.cache[active.id]?.title ?? "No tracks queued");
     let artist = $derived(
         tracks.cache[active.id]?.artist
             ? `• ${tracks.cache[active.id].artist}`
@@ -110,6 +115,7 @@
     function onSeekInput(e: Event) {
         isSeeking = true;
         currentTime = Number((e.target as HTMLInputElement).value);
+        updateSeekFill();
     }
 
     function onSeekChange(e: Event) {
@@ -118,16 +124,18 @@
         isSeeking = false;
     }
 
-    // TESTING
+    function updateSeekFill() {
+        if (!audioElement) return;
+        const percent = (currentTime / (duration || 1)) * 100;
+        seekElement?.style.setProperty("--fill", `${percent}%`);
+    }
 
     let equalizerElement = $state<HTMLDivElement | null>(null);
-    const BLOCKS = 7; // must match the number of blocks in each column
+    const BLOCKS = 7;
 
     $effect(() => {
         if (!equalizerElement) return;
 
-        // Heights per column — each column bounces between a min and max block count
-        // independently so they move at different rates
         const columns = [
             { min: 1, max: BLOCKS, speed: 120 },
             { min: 1, max: BLOCKS, speed: 180 },
@@ -138,11 +146,8 @@
 
         let intervals: ReturnType<typeof setInterval>[] = [];
 
-        function setColumnHeight(colEl: Element, lit: number) {
-            const blocks = colEl.querySelectorAll(".player__eq-block");
-            // Blocks are rendered top-to-bottom in the DOM but the bar grows
-            // from the bottom, so we reverse: block at index (BLOCKS-1) is the
-            // bottom-most and always the first to light up
+        function setColumnHeight(columnElement: Element, lit: number) {
+            const blocks = columnElement.querySelectorAll(".player__eq-block");
             blocks.forEach((block, i) => {
                 const fromBottom = BLOCKS - 1 - i;
                 (block as HTMLElement).classList.toggle(
@@ -153,9 +158,9 @@
         }
 
         function startAnimating() {
-            const colEls =
+            const columnElements =
                 equalizerElement!.querySelectorAll(".player__eq-col");
-            colEls.forEach((colEl, i) => {
+            columnElements.forEach((colEl, i) => {
                 const { min, max, speed } = columns[i];
                 intervals.push(
                     setInterval(() => {
@@ -170,10 +175,9 @@
         function stopAnimating() {
             intervals.forEach(clearInterval);
             intervals = [];
-            // Collapse all columns to 1 block when paused
             equalizerElement!
                 .querySelectorAll(".player__eq-col")
-                .forEach((colEl) => setColumnHeight(colEl, 1));
+                .forEach((columnElement) => setColumnHeight(columnElement, 1));
         }
 
         if (isPlaying) {
@@ -200,7 +204,10 @@
     }}
     onended={handleEnded}
     ontimeupdate={() => {
-        if (!isSeeking && audioElement) currentTime = audioElement.currentTime;
+        if (!isSeeking && audioElement) {
+            currentTime = audioElement.currentTime;
+            updateSeekFill();
+        }
     }}
     onloadedmetadata={() => {
         if (audioElement) duration = audioElement.duration;
@@ -212,6 +219,7 @@
     <div class="player__seek-row">
         <span class="player__time">{formatTime(currentTime)}</span>
         <input
+            bind:this={seekElement}
             type="range"
             min="0"
             max={duration || 1}
@@ -280,7 +288,6 @@
             </button>
         </div>
 
-        <!-- Modes + volume -->
         <div class="player__secondary">
             <div class="player__modes">
                 <button
@@ -302,11 +309,12 @@
             <div class="player__volume">
                 <span class="player__volume-label">VOL</span>
                 <input
+                    bind:value={volume}
+                    bind:this={volumeElement}
                     type="range"
                     min="0"
                     max="1"
                     step="0.01"
-                    bind:value={volume}
                     class="player__volume-slider"
                     aria-label="Volume"
                 />
