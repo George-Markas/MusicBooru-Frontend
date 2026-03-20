@@ -1,21 +1,40 @@
 <script lang="ts">
-    import { type AppState } from '../lib/api/common';
+    import { type AppState } from "../lib/api/common";
 
-    import { getContext } from 'svelte';
-    import {authenticate} from '../lib/api/auth';
+    import { getContext } from "svelte";
+    import { authenticate, getSession, type SessionData } from "../lib/api/auth";
 
-    let username = $state('');
-    let password = $state('');
+    let username = $state("");
+    let password = $state("");
 
-    const app = getContext<{page: AppState }>('app');
+    const app = getContext<{ page: AppState }>("app");
+    const session = getContext<SessionData>("session");
+
+    async function updateSession() {
+        try {
+            const response = await getSession();
+            if (response.ok) {
+                app.page = "home";
+                session.username = response.data.username;
+                session.role = response.data.role;
+            } else {
+                app.page = "login";
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
         username = username.trim();
         password = password.trim();
         try {
-            const response = await authenticate({username, password});
-            if (response.ok) {app.page = 'home'; console.log(response.data);}
+            const response = await authenticate({ username, password });
+            if (response.ok) {
+                app.page = "home";
+                updateSession();
+            }
         } catch (error) {
             console.error(error);
         }
