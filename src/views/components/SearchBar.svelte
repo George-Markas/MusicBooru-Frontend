@@ -6,8 +6,8 @@
 
     let debounceTimer: ReturnType<typeof setTimeout>;
 
-    const tracks = getContext<{ list: Track[] }>('tracklist');
-    const view = getContext<{mode: ViewMode}>('view');
+    const tracks = getContext<{ list: Track[] }>("tracklist");
+    const view = getContext<{ mode: ViewMode }>("view");
 
     async function handleSearch(query: string) {
         try {
@@ -22,14 +22,15 @@
 
     async function handleSort(by: SortMode) {
         tracks.list = [...tracks.list].sort((a, b) =>
-        a[by].localeCompare(b[by], undefined, { sensitivity: 'base' }));
+            a[by].localeCompare(b[by], undefined, { sensitivity: "base" }),
+        );
     }
 
     function handleInputMulti(e: Event) {
         const query = (e.target as HTMLInputElement).value as SortMode;
 
-        if (query === 'title') {
-            view.mode = 'Track';
+        if (query === "title") {
+            view.mode = "Track";
         }
 
         handleSort(query);
@@ -38,7 +39,7 @@
     function handleInputSearch(e: Event) {
         const query = (e.target as HTMLInputElement).value;
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout( () => handleSearch(query), 300);
+        debounceTimer = setTimeout(() => handleSearch(query), 300);
     }
 </script>
 
@@ -52,18 +53,22 @@
 
     <label for="options">Sort by:</label>
     <select id="options" onchange={handleInputMulti}>
-        {#if view.mode === 'Track'}           
-            <option value="title">  Title  </option>
+        {#if view.mode === "Track"}
+            <option value="title"> Title </option>
         {/if}
-        <option value="album">  Album  </option>
+        <option value="album"> Album </option>
         <option value="artist"> Artist </option>
     </select>
 
-    <button onclick={() => { 
-        if (view.mode !== 'Album') {
-            view.mode='Album'; 
-            handleSort('album');
-        }
-        }}>Album</button>
-    <button onclick={() => view.mode='Track'}>Track</button>
+    <button
+        onclick={() => {
+            if (view.mode !== "Album") {
+                view.mode = "Album";
+                handleSort("album");
+            }
+        }}>
+        Album
+    </button>
+
+    <button onclick={() => (view.mode = "Track")}>Track</button>
 </div>
