@@ -7,7 +7,7 @@ export function persistedState<T>(key: string, initial: T) {
     })
 
     return {
-        get value() { return value },
+        get value() { return value; },
         set value(v: T) { value = v; }
     };
 }
