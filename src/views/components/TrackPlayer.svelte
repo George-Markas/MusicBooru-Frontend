@@ -121,7 +121,7 @@
     // TESTING
 
     let equalizerElement = $state<HTMLDivElement | null>(null);
-    const BLOCKS = 5; // must match the number of blocks in each column
+    const BLOCKS = 7; // must match the number of blocks in each column
 
     $effect(() => {
         if (!equalizerElement) return;
@@ -133,7 +133,7 @@
             { min: 1, max: BLOCKS, speed: 180 },
             { min: 1, max: BLOCKS, speed: 100 },
             { min: 1, max: BLOCKS, speed: 150 },
-            { min: 1, max: BLOCKS, speed: 130 }
+            { min: 1, max: BLOCKS, speed: 130 },
         ];
 
         let intervals: ReturnType<typeof setInterval>[] = [];
@@ -153,7 +153,8 @@
         }
 
         function startAnimating() {
-            const colEls = equalizerElement!.querySelectorAll(".player__eq-col");
+            const colEls =
+                equalizerElement!.querySelectorAll(".player__eq-col");
             colEls.forEach((colEl, i) => {
                 const { min, max, speed } = columns[i];
                 intervals.push(
@@ -224,26 +225,12 @@
         <span class="player__time">{formatTime(duration)}</span>
     </div>
 
-    <!-- Bottom row: title + transport + modes + volume -->
     <div class="player__bar">
-        <!-- Track info -->
         <div class="player__info">
             <span class="player__title-text">{title} {artist}</span>
             <span class="player__index">{index + 1} / {queue.length}</span>
-
-            <!-- TESTING -->
-            <div class="player__eq" bind:this={equalizerElement} aria-hidden="true">
-                {#each [0, 1, 2, 3, 4] as col}
-                    <div class="player__eq-col" data-col={col}>
-                        {#each [0, 1, 2, 3, 4] as row}
-                            <div class="player__eq-block"></div>
-                        {/each}
-                    </div>
-                {/each}
-            </div>
         </div>
 
-        <!-- Transport -->
         <div class="player__controls">
             <button class="player__btn" onclick={prev} aria-label="Previous">
                 <svg
@@ -258,11 +245,12 @@
             <button
                 class="player__btn player__btn--play"
                 onclick={() =>
-                    audioElement?.paused ? audioElement.play() : audioElement?.pause()}
+                    audioElement?.paused
+                        ? audioElement.play()
+                        : audioElement?.pause()}
                 aria-label={isPlaying ? "Pause" : "Play"}
             >
                 {#if isPlaying}
-                    <!-- Pause icon: two vertical bars -->
                     <svg
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -271,7 +259,6 @@
                         <path d="M5 4h3v12H5V4zm7 0h3v12h-3V4z" />
                     </svg>
                 {:else}
-                    <!-- Play icon: right-pointing triangle -->
                     <svg
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -326,6 +313,21 @@
                 <span class="player__volume-value"
                     >{Math.round(volume * 100)}</span
                 >
+            </div>
+
+            <!-- TESTING -->
+            <div
+                class="player__eq"
+                bind:this={equalizerElement}
+                aria-hidden="true"
+            >
+                {#each [0, 1, 2, 3, 4] as col}
+                    <div class="player__eq-col" data-col={col}>
+                        {#each [0, 1, 2, 3, 4, 5, 6] as row}
+                            <div class="player__eq-block"></div>
+                        {/each}
+                    </div>
+                {/each}
             </div>
         </div>
     </div>

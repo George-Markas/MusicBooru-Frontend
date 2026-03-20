@@ -223,8 +223,8 @@
 .player__eq {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
-    height: 26px;
+    gap: 4px;
+    height: 20px;
     flex-shrink: 0;
 }
 
@@ -232,11 +232,11 @@
     display: flex;
     flex-direction: column;
     gap: 1px;
-    width: 3px; /* explicit width so no column can be narrower */
+    width: 4px; /* explicit width so no column can be narrower */
 }
 
 .player__eq-block {
-    width: 3px;
+    width: 6px;
     height: 3px;
     flex-shrink: 0; /* prevents any block from compressing */
     background: #333;
