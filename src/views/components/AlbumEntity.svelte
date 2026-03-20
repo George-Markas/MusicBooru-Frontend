@@ -39,7 +39,7 @@
     </button>
 
     <div class="popup" class:open={isOpen}>
-        <TrackList data={tracks} mode="Track"/>
+        <TrackList data={tracks}/>
     </div>
 </div>
 

@@ -81,3 +81,13 @@ export async function uploadTrack(form: FormData): Promise<Result<string>> {
 
     return response;
 }
+
+export async function deleteTrack(id: string) : Promise<Result<undefined>> {
+    const path = `track/${id}`;
+
+    const response = await api<undefined>(path, {
+        method: 'DELETE',
+    }, {as: 'none'});
+
+    return response;
+}

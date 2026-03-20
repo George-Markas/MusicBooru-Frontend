@@ -8,7 +8,7 @@ export type Result<T> = {ok: true, status: number, data: T} | {ok: false, status
 export async function api<T>(
     url: string, 
     options: RequestInit = {},
-    extras?: { params?: string, as?: 'json' | 'blob' }
+    extras?: { params?: string, as?: 'blob' | 'none' }
 ) : Promise<Result<T>> {
 
     const hasExtras = extras?.params !== undefined; 
@@ -30,6 +30,8 @@ export async function api<T>(
 
     const data = extras?.as === 'blob'
     ? await response.blob()
+    : extras?.as === 'none'
+    ? null
     : await response.json();
 
     return {ok: true, status: response.status, data};

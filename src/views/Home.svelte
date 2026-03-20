@@ -88,7 +88,7 @@
 {#if view.mode === "Album"}
     <AlbumList {albums} />
 {:else}
-    <TrackList data={tracks.list} mode={view.mode} />
+    <TrackList data={tracks.list}/>
 {/if}
 
 {#if session.role === "ADMIN"}

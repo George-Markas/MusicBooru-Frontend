@@ -2,15 +2,13 @@
     import { getContext} from "svelte";
     import { type Track} from "../../lib/api/track";
 
-    let { trackData} = $props<{ 
-        trackData: Track 
-    }>();
+    let { trackData, oncontextmenu } = $props<{ trackData: Track, oncontextmenu: (e: MouseEvent) => void }>();
 
     const track = getContext<{id: string}>('stream');
 
 </script>
 
-<button class='list' ondblclick={() => track.id = trackData.id}>    
+<button class='list' oncontextmenu={oncontextmenu} ondblclick={() => track.id = trackData.id}>    
     <p class="track-title">{trackData.title}</p>
 </button>
 
