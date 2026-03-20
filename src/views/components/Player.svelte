@@ -328,9 +328,9 @@
                 bind:this={equalizerElement}
                 aria-hidden="true"
             >
-                {#each [0, 1, 2, 3, 4] as col}
-                    <div class="player__eq-col" data-col={col}>
-                        {#each [0, 1, 2, 3, 4, 5, 6] as row}
+                {#each [0, 1, 2, 3, 4] as column (column)}
+                    <div class="player__eq-col" data-col={column}>
+                        {#each [0, 1, 2, 3, 4, 5, 6]}
                             <div class="player__eq-block"></div>
                         {/each}
                     </div>

@@ -7,7 +7,6 @@
     import { persistedState } from "../lib/persisted.svelte";
 
     import TrackList from "./components/TrackList.svelte";
-    // import TrackPlayer from "./components/TrackPlayer.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
     import RegisterModal from "./components/RegisterModal.svelte";
@@ -83,7 +82,6 @@
     });
 </script>
 
-<p>88 == Welcome to musicbooru == 88</p>
 <SearchBar />
 <button onclick={handleLogout}>Logout</button>
 
