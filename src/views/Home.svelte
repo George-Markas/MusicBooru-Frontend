@@ -4,6 +4,7 @@
 
     import { getContext, setContext, onMount } from "svelte";
     import { logout, type SessionData } from "../lib/api/auth";
+    import { persistedState } from "../lib/persisted.svelte";
 
     import TrackList from "./components/TrackList.svelte";
     // import TrackPlayer from "./components/TrackPlayer.svelte";
@@ -32,8 +33,9 @@
     let streamTrack = $state({ id: "" });
     setContext("streamTrack", streamTrack);
 
-    let view = $state({ mode: "Track" as ViewMode });
-    setContext("view", view);
+    let view = persistedState<{ mode: ViewMode }>("view", { mode: "Track" });
+
+    setContext("view", view.value);
 
     async function handleLogout() {
         try {
@@ -85,7 +87,7 @@
 <SearchBar />
 <button onclick={handleLogout}>Logout</button>
 
-{#if view.mode === "Album"}
+{#if view.value.mode === "Album"}
     <AlbumList {albums} />
 {:else}
     <TrackList data={tracks.list} />
