@@ -323,7 +323,6 @@
                 >
             </div>
 
-            <!-- TESTING -->
             <div
                 class="player__eq"
                 bind:this={equalizerElement}
