@@ -4,7 +4,7 @@ export function persistedState<T>(key: string, initial: T) {
 
     $effect(() => {
         localStorage.setItem(key, JSON.stringify(value));
-    })
+    });
 
     return {
         get value() { return value; },

@@ -23,7 +23,16 @@
 </script>
 
 <form onsubmit={handleSubmit}>
-    <input type="text" bind:value={username} placeholder="Name"/>
-    <input type="text" bind:value={password} placeholder="Password"/>
+    <input
+        type="text"
+        name="login username field"
+        bind:value={username}
+        placeholder="Name"
+    />
+    <input
+        type="text"
+        name="login password field"
+        bind:value={password}
+        placeholder="Password"/>
     <button type="submit">Login</button>
 </form>
