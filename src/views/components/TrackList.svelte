@@ -6,6 +6,15 @@
 
     const tracks = getContext<{ cache: Record<string, Track> }>("trackCache");
 
+    function portal(node: HTMLElement) {
+        document.body.appendChild(node);
+        return {
+            destroy() {
+                node.remove();
+            },
+        };
+    }
+
     let { data } = $props<{
         data: Track[];
     }>();
@@ -45,13 +54,14 @@
 </div>
 
 {#if menuVisible}
-    <ul class="menu" style="top: {menuY}px; left: {menuX}px;">
+    <ul class="menu" use:portal style="top: {menuY}px; left: {menuX}px;">
         <li>
             <button
                 onclick={async () => {
                     menuVisible = false;
                     tracks.cache = { ...tracks.cache, [selected.id]: selected };
-                }}>Add to queue</button>
+                }}>Add to queue</button
+            >
         </li>
         <li>
             <button
@@ -61,7 +71,8 @@
                     if (response.ok) {
                         console.log(`Track with id ${selected.id} deleted`);
                     }
-                }}>Delete</button>
+                }}>Delete</button
+            >
         </li>
     </ul>
 {/if}
