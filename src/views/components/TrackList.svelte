@@ -72,7 +72,7 @@
                 if (response.ok) {
                     console.log(`Track with id ${selected.id} added to playlist ${playlist.name}/${playlist.id}`);
                 }
-            }}>{playlist.name}</button>
+            }}>Add to '{playlist.name}'</button>
         {/each}
         
         {#if playlist===null && session.role === 'ADMIN'}      
