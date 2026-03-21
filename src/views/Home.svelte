@@ -17,6 +17,8 @@
     let tracks = $state({ list: [] as Track[] });
     setContext("tracklist", tracks);
 
+    $inspect(tracks.list);
+
     let albums = $derived(
         Object.values(
             tracks.list.reduce(
@@ -34,6 +36,11 @@
 
     let view = persistedState<{ mode: ViewMode }>("view", { mode: "Track" });
     setContext("view", view.value);
+
+    function onRemove(id: string) {
+        console.log("Called!");
+        tracks.list = tracks.list.filter(t => t.id !== id);
+    }
 
     async function handleLogout() {
         try {
@@ -88,7 +95,7 @@
 {#if view.value.mode === "Album"}
     <AlbumList albums={albums} />
 {:else}
-    <TrackList data={tracks.list} />
+    <TrackList data={tracks.list} {onRemove} />
 {/if}
 
 {#if session.role === "ADMIN"}

@@ -8,10 +8,13 @@
     const tracks = getContext<{ cache: Record<string, Track> }>("trackCache");
     const session = getContext<SessionData>("session");
 
-    let { data, playlist=null } = $props<{
+    let { data, playlist = null, onRemove } = $props<{
         data: Track[];
         playlist?: Playlist;
+        onRemove?: (id: string) => void;
     }>();
+    
+    let localData = $state({ list: [...data] });
 
     let selected = $state({} as Track);
     let menuX = $state(0);
@@ -41,7 +44,7 @@
 
 <svelte:window onclick={() => (menuVisible = false)} />
 
-{#each data as track (track.id)}
+{#each localData.list as track (track.id)}
     <TrackEntity
         trackData={track}
         oncontextmenu={(e: MouseEvent) => {
@@ -59,47 +62,52 @@
         <button
             onclick={async () => {
                 menuVisible = false;
-
                 tracks.cache = { ...tracks.cache, [selected.id]: selected };
             }}>Add to current queue...</button
         >
 
         {#each playlists.data as playlist (playlist) }            
-            <button onclick={ async () => {
+            <button onclick={async () => {
                 const response = await addTrack(playlist.id, selected.id);
-                if (response.ok) {console.log(`Track with id ${selected.id} added to playlist ${playlist.name}/${playlist.id}`);}
+                if (response.ok) {
+                    console.log(`Track with id ${selected.id} added to playlist ${playlist.name}/${playlist.id}`);
+                }
             }}>{playlist.name}</button>
         {/each}
         
         {#if playlist===null && session.role === 'ADMIN'}      
-        <button onclick={async () => { 
+            <button onclick={async () => { 
                 menuVisible = false;
                 const response = await deleteTrack(selected.id);
                 if (response.ok) {
-                    console.log(`Track with id ${selected} deleted`);
+                    localData.list = localData.list.filter(t => t.id !== selected.id);
+                    onRemove();
+                    console.log(`Track with id ${selected.id} deleted`);
                 }
                 console.log(response.status);
             }}>Delete from Collection</button>
 
-
         {:else if playlist}
             <button onclick={async () => { 
                 menuVisible = false;
-                const response = await removeTrack(playlist.id, getEntryId(selected.id) ?? '');
+                const entryId = getEntryId(selected.id);
+                const response = await removeTrack(playlist.id, entryId ?? '');
+
                 if (response.ok) {
-                    console.log(`Track with id ${getEntryId(selected.id)} deleted from playlist ${playlist.id}`);
+                    localData.list = localData.list.filter(t => t.id !== selected.id);
+                    onRemove?.(selected.id);
+                    console.log(`Track with id ${entryId} deleted from playlist ${playlist.id}`);
                 }
                 console.log(response.status);
-            }}>Remove from Album</button>
+            }}>Remove from Playlist</button>
         {/if}
-        
 
     </ul>
 {/if}
 
 <style>
     .menu {
-        position: fixed; /* fixed so clientX/clientY coordinates work directly */
+        position: fixed;
         margin: 0;
         padding: 4px 0;
         list-style: none;
