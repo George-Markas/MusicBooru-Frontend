@@ -3,94 +3,64 @@
     import { logout, type SessionData } from "../../lib/api/auth";
     import type { AppState } from "../../lib/api/common";
     import RegisterModal from "./RegisterModal.svelte";
+    import "../../assets/styles/sidebar.css";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
-    let isOpen = $state(true);
+    let isOpen = $state(false);
 
     async function handleLogout() {
         try {
             const response = await logout();
             if (response.ok) {
                 app.page = "login";
-                console.log(response.data);
             }
         } catch (error) {
             console.error(error);
         }
     }
+
+    function handleMouseMove(e: MouseEvent) {
+        // Open when cursor is within 32px of the right edge
+        const threshold = 32;
+        if (e.clientX >= window.innerWidth - threshold) {
+            isOpen = true;
+        }
+    }
 </script>
 
-<div class="sidebar" class:collapsed={!isOpen}>
-    <button class="toggle" onclick={() => (isOpen = !isOpen)}>
-        {isOpen ? "→" : "←"}
-    </button>
-    {#if session.role === 'ADMIN'}
-        <RegisterModal />    
-    {/if}
-    <button onclick={handleLogout}>Logout</button>
+<svelte:window onmousemove={handleMouseMove} />
 
-    {#if isOpen}
-        <button onclick={() => app.page = 'home'}>Home</button>
-        <button onclick={() => app.page = 'playlists'}>Library</button>
-    {/if}
+<!-- svelte-ignore a11y_no_static_element_interactions -->
+<div
+    class="sidebar"
+    class:open={isOpen}
+    onmouseleave={() => (isOpen = false)}
+>
+    <div class="sidebar__header">
+        <span class="sidebar__username">{session.username}</span>
+        <span class="sidebar__role">{session.role}</span>
+    </div>
 
-    <p>{session.username}</p>
-    <p>{session.role}</p>
+    <div class="sidebar__divider"></div>
+
+    <nav class="sidebar__nav">
+        <button class="sidebar__btn" onclick={() => (app.page = "home")}>
+            LIBRARY
+        </button>
+        <button class="sidebar__btn" onclick={() => (app.page = "playlists")}>
+            PLAYLISTS
+        </button>
+    </nav>
+
+    <div class="sidebar__divider"></div>
+
+    <div class="sidebar__footer">
+        {#if session.role === "ADMIN"}
+            <RegisterModal />
+        {/if}
+        <button class="sidebar__btn sidebar__btn--danger" onclick={handleLogout}>
+            LOGOUT
+        </button>
+    </div>
 </div>
-
-<style>
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        background-color: #2c3e50;
-        color: #ecf0f1;
-        padding: 20px;
-        position: fixed;
-        right: 0;
-        top: 0;
-        transition: width 0.3s ease;
-    }
-
-    .sidebar.collapsed {
-        width: 60px;
-        padding: 20px 10px;
-    }
-
-    .toggle {
-        background: #34495e;
-        color: #ecf0f1;
-        border: none;
-        padding: 10px;
-        width: 100%;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-bottom: 20px;
-        font-size: 18px;
-    }
-
-    .toggle:hover {
-        background: #3498db;
-    }
-
-    .sidebar button:not(.toggle) {
-        display: block;
-        width: 100%;
-        color: #ecf0f1;
-        background: transparent;
-        border: none;
-        text-align: left;
-        padding: 12px 16px;
-        margin-bottom: 8px;
-        border-radius: 4px;
-        transition: background-color 0.2s;
-        white-space: nowrap;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    .sidebar button:not(.toggle):hover {
-        background-color: #34495e;
-    }
-
-</style>
