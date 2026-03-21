@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
 
 .album {
-    font-family: "IBM Plex Mono", monospace;
+    font-family: 'IBM Plex Mono', monospace;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -37,7 +37,7 @@
 }
 
 .album__name {
-    font-size: 11pt;
+    font-size: 0.85rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     color: #e8e8e8;
@@ -47,7 +47,7 @@
 }
 
 .album__artist {
-    font-size: 10pt;
+    font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.05em;
     color: #8b8b8b;

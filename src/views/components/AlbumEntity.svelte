@@ -2,14 +2,13 @@
     import { getTrackArt, type Track } from "../../lib/api/track";
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
+    import "../../assets/styles/album-entity.css";
 
     let { tracks } = $props<{ tracks: Track[] }>();
     let cover = $state<string>("");
-    let albumEl = $state<HTMLDivElement | null>(null);
+    let albumElement = $state<HTMLDivElement | null>(null);
 
-    const trackCache = getContext<{ cache: Record<string, Track> }>(
-        "trackCache",
-    );
+    const trackCache = getContext<{ cache: Record<string, Track> }>("trackCache");
 
     let open = getContext<{ name: string }>("openAlbum");
     let isOpen = $derived(open.name === tracks[0].album);
@@ -26,7 +25,7 @@
     }
 
     function handleOutsideClick(e: MouseEvent) {
-        if (isOpen && albumEl && !albumEl.contains(e.target as Node)) {
+        if (isOpen && albumElement && !albumElement.contains(e.target as Node)) {
             open.name = "";
         }
     }
@@ -44,15 +43,14 @@
 
 <svelte:window onclick={handleOutsideClick} />
 
-<div class="album" bind:this={albumEl}>
+<div class="album" bind:this={albumElement}>
     <button
         class="album__button"
         ondblclick={() =>
             (trackCache.cache = Object.fromEntries(
                 tracks.map((track: Track) => [track.id, track]),
             ))}
-        onclick={() =>
-            (open.name = open.name === tracks[0].album ? "" : tracks[0].album)}
+        onclick={() => (open.name = open.name === tracks[0].album ? "" : tracks[0].album)}
     >
         <img src={cover} alt="cover" class="album__cover" />
     </button>
@@ -70,4 +68,3 @@
         </div>
     {/if}
 </div>
-
