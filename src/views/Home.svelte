@@ -3,7 +3,7 @@
     import { type Track, getTracks, uploadTrack } from "../lib/api/track";
 
     import { getContext, setContext, onMount } from "svelte";
-    import { logout, type SessionData } from "../lib/api/auth";
+    import { type SessionData } from "../lib/api/auth";
     import { persistedState } from "../lib/persisted.svelte";
 
     import TrackList from "./components/TrackList.svelte";
@@ -17,6 +17,8 @@
 
     let tracks = $state({ list: [] as Track[] });
     setContext("tracklist", tracks);
+
+    $inspect(tracks.list);
 
     let albums = $derived(
         Object.values(
@@ -34,19 +36,11 @@
     setContext("streamTrack", streamTrack);
 
     let view = persistedState<{ mode: ViewMode }>("view", { mode: "Track" });
-
     setContext("view", view.value);
 
-    async function handleLogout() {
-        try {
-            const response = await logout();
-            if (response.ok) {
-                app.page = "login";
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
+    function onRemove(id: string) {
+        console.log("Called!");
+        tracks.list = tracks.list.filter(t => t.id !== id);
     }
 
     async function handleUpload(e: Event) {
