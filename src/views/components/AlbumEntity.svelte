@@ -2,8 +2,9 @@
     import { getTrackArt, type Track } from "../../lib/api/track";
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
+    import { getIcon, type Playlist } from "../../lib/api/playlist";
 
-    let { tracks } = $props<{ tracks: Track[] }>();
+    let { tracks, playlist=null} = $props<{ tracks: Track[]; playlist?: Playlist }>();
     let cover = $state<string>("");
 
     const trackCache = getContext<{ cache: Record<string, Track> }>(
@@ -11,21 +12,31 @@
     );
 
     let open = getContext<{ name: string }>("openAlbum");
-    let isOpen = $derived(open.name === tracks[0].album);
+    let isOpen = $derived(open.name === (playlist?.name ?? tracks[0].album));
 
     async function loadArt() {
         try {
             const response = await getTrackArt(tracks[0].id);
             if (response.ok) {
                 cover = URL.createObjectURL(response.data);
-            }
+            } 
         } catch (error) {
             console.log(error);
         }
     }
+    
+    async function loadListArt() {
+        try {
+            const response = await getIcon(playlist.id);
+            cover = URL.createObjectURL(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     onMount(async () => {
-        loadArt();
+        if (playlist !== null) {loadListArt();}
+        else {loadArt();}
     });
 
     onDestroy(async () => {
@@ -43,14 +54,14 @@
             (trackCache.cache = Object.fromEntries(
                 tracks.map((track: Track) => [track.id, track]),
             ))}
-        onclick={() => (open.name = isOpen ? null : tracks[0].album)}
+        onclick={() => (open.name = playlist?.name ?? tracks[0].album)}
     >
         <img src={cover} alt="cover" />
-        <span>{tracks[0].album}</span>
+        <span>{playlist?.name ?? tracks[0].album}</span>
     </button>
 
     <div class="popup" class:open={isOpen}>
-        <TrackList data={tracks} />
+        <TrackList data={tracks} playlist={playlist}/>
     </div>
 </div>
 

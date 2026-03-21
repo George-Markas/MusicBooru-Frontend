@@ -7,6 +7,8 @@
     import { getSession, type SessionData } from "./lib/api/auth";
     import type { Track } from "./lib/api/track";
     import TrackPlayer from "./views/components/TrackPlayer.svelte";
+    import Playlist from "./views/Playlist.svelte";
+    import Sidebar from "./views/components/Sidebar.svelte";
 
     const app = $state({ page: "loading" as AppState });
     setContext("app", app);
@@ -41,7 +43,9 @@
 {:else}
     {#if app.page === "home"}
         <Home />
-        <!-- {:else TODO PLAYLISTS} -->
+    {:else if app.page === "playlists"}
+        <Playlist/>
     {/if}
     <TrackPlayer />
+    <Sidebar/>
 {/if}

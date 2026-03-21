@@ -3,7 +3,8 @@ export const BASE_URL = 'http://localhost:8080/api';
 export type SortMode = 'album' | 'title' | 'artist';
 export type ViewMode = 'Album' | 'Track'; 
 export type AppState = 'login' | 'home' | 'playlists' | 'error' | 'loading';
-export type Result<T> = {ok: true, status: number, data: T} | {ok: false, status: number};
+export type Result<T> = {ok: true, status: number, data: T}; 
+// | {ok: false, status: number};
  
 export async function api<T>(
     url: string, 
@@ -24,9 +25,9 @@ export async function api<T>(
         }
     );
 
-    if (!response.ok) {
-        return {ok: false, status: response.status};
-    }
+    // if (!response.ok) {
+    //     return {ok: false, status: response.status};
+    // }
 
     const data = extras?.as === 'blob'
     ? await response.blob()

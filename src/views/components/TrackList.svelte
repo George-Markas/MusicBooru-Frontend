@@ -1,18 +1,42 @@
 <script lang="ts">
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
     import { deleteTrack, type Track } from "../../lib/api/track";
     import TrackEntity from "./TrackEntity.svelte";
+    import { addTrack, getPlaylists, removeTrack, type Playlist, type PlaylistEntry } from "../../lib/api/playlist";
+    import type { SessionData } from "../../lib/api/auth";
 
     const tracks = getContext<{ cache: Record<string, Track> }>("trackCache");
+    const session = getContext<SessionData>("session");
 
-    let { data } = $props<{
+    let { data, playlist=null } = $props<{
         data: Track[];
+        playlist?: Playlist;
     }>();
 
     let selected = $state({} as Track);
     let menuX = $state(0);
     let menuY = $state(0);
     let menuVisible = $state(false);
+
+    function getEntryId(trackId: string): string | undefined {
+        return playlist?.entries.find((entry: PlaylistEntry) => entry.trackId === trackId)?.id;
+    }
+
+    let playlists = $state({ data: [] as Playlist[] });
+    async function fetchPlaylistNames() {
+        try {
+            const response = await getPlaylists();
+            if (response.ok) {
+                playlists.data = response.data;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    onMount(() => { 
+        fetchPlaylistNames();
+    });
 </script>
 
 <svelte:window onclick={() => (menuVisible = false)} />
@@ -40,17 +64,36 @@
             }}>Add to current queue...</button
         >
 
-        <button
-            onclick={async () => {
+        {#each playlists.data as playlist (playlist) }            
+            <button onclick={ async () => {
+                const response = await addTrack(playlist.id, selected.id);
+                if (response.ok) {console.log(`Track with id ${selected.id} added to playlist ${playlist.name}/${playlist.id}`);}
+            }}>{playlist.name}</button>
+        {/each}
+        
+        {#if playlist===null && session.role === 'ADMIN'}      
+        <button onclick={async () => { 
                 menuVisible = false;
-
                 const response = await deleteTrack(selected.id);
                 if (response.ok) {
                     console.log(`Track with id ${selected} deleted`);
                 }
                 console.log(response.status);
-            }}>Action</button
-        >
+            }}>Delete from Collection</button>
+
+
+        {:else if playlist}
+            <button onclick={async () => { 
+                menuVisible = false;
+                const response = await removeTrack(playlist.id, getEntryId(selected.id) ?? '');
+                if (response.ok) {
+                    console.log(`Track with id ${getEntryId(selected.id)} deleted from playlist ${playlist.id}`);
+                }
+                console.log(response.status);
+            }}>Remove from Album</button>
+        {/if}
+        
+
     </ul>
 {/if}
 
