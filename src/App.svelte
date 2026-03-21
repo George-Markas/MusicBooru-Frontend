@@ -6,7 +6,7 @@
     import Home from "./views/Home.svelte";
     import { getSession, type SessionData } from "./lib/api/auth";
     import type { Track } from "./lib/api/track";
-    import TrackPlayer from "./views/components/TrackPlayer.svelte";
+    import TrackPlayer from "./views/components/Player.svelte";
 
     const app = $state({ page: "loading" as AppState });
     setContext("app", app);

@@ -5,6 +5,7 @@
 
     let { tracks } = $props<{ tracks: Track[] }>();
     let cover = $state<string>("");
+    let albumEl = $state<HTMLDivElement | null>(null);
 
     const trackCache = getContext<{ cache: Record<string, Track> }>(
         "trackCache",
@@ -24,75 +25,49 @@
         }
     }
 
+    function handleOutsideClick(e: MouseEvent) {
+        if (isOpen && albumEl && !albumEl.contains(e.target as Node)) {
+            open.name = "";
+        }
+    }
+
     onMount(async () => {
         loadArt();
     });
 
     onDestroy(async () => {
         if (cover) {
-            console.log("Track gone");
             URL.revokeObjectURL(cover);
         }
     });
 </script>
 
-<div class="album">
+<svelte:window onclick={handleOutsideClick} />
+
+<div class="album" bind:this={albumEl}>
     <button
-        class="button"
+        class="album__button"
         ondblclick={() =>
             (trackCache.cache = Object.fromEntries(
                 tracks.map((track: Track) => [track.id, track]),
             ))}
-        onclick={() => (open.name = isOpen ? null : tracks[0].album)}
+        onclick={() =>
+            (open.name = open.name === tracks[0].album ? "" : tracks[0].album)}
     >
-        <img src={cover} alt="cover" />
-        <span>{tracks[0].album}</span>
+        <img src={cover} alt="cover" class="album__cover" />
     </button>
 
-    <div class="popup" class:open={isOpen}>
-        <TrackList data={tracks} />
+    <div class="album__info">
+        <span class="album__name">{tracks[0].album}</span>
+        <span class="album__artist">{tracks[0].artist}</span>
     </div>
+
+    {#if isOpen}
+        <div class="popup">
+            <div class="popup__inner">
+                <TrackList data={tracks} />
+            </div>
+        </div>
+    {/if}
 </div>
 
-<style>
-    .button {
-        position: relative;
-        padding: 0;
-        border: none;
-        cursor: pointer;
-        width: 140px;
-        height: 140px;
-        overflow: hidden;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    span {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 4px;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        text-align: center;
-    }
-
-    .album {
-        display: flex-start;
-        flex-direction: column;
-    }
-
-    .popup {
-        max-height: 0;
-        overflow: hidden;
-    }
-
-    .popup.open {
-        max-height: 300px;
-    }
-</style>

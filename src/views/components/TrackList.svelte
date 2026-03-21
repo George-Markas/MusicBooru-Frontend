@@ -2,6 +2,7 @@
     import { getContext } from "svelte";
     import { deleteTrack, type Track } from "../../lib/api/track";
     import TrackEntity from "./TrackEntity.svelte";
+    import "../../assets/styles/track-list.css";
 
     const tracks = getContext<{ cache: Record<string, Track> }>("trackCache");
 
@@ -17,64 +18,50 @@
 
 <svelte:window onclick={() => (menuVisible = false)} />
 
-{#each data as track (track.id)}
-    <TrackEntity
-        trackData={track}
-        oncontextmenu={(e: MouseEvent) => {
-            e.preventDefault();
-            selected = track;
-            menuX = e.clientX;
-            menuY = e.clientY;
-            menuVisible = true;
-        }}
-    />
-{/each}
+<div class="tracklist">
+    <div class="tracklist__header">
+        <span class="tracklist__col tracklist__col--title">TITLE</span>
+        <span class="tracklist__col tracklist__col--artist">ARTIST</span>
+        <span class="tracklist__col tracklist__col--album">ALBUM</span>
+        <span class="tracklist__col tracklist__col--genre">GENRE</span>
+        <span class="tracklist__col tracklist__col--year">YEAR</span>
+        <span class="tracklist__col tracklist__col--duration">DURATION</span>
+    </div>
+
+    <div class="tracklist__body">
+        {#each data as track (track.id)}
+            <TrackEntity
+                trackData={track}
+                oncontextmenu={(e: MouseEvent) => {
+                    e.preventDefault();
+                    selected = track;
+                    menuX = e.clientX;
+                    menuY = e.clientY;
+                    menuVisible = true;
+                }}
+            />
+        {/each}
+    </div>
+</div>
 
 {#if menuVisible}
     <ul class="menu" style="top: {menuY}px; left: {menuX}px;">
-        <button
-            onclick={async () => {
-                menuVisible = false;
-
-                tracks.cache = { ...tracks.cache, [selected.id]: selected };
-            }}>Add to current queue...</button
-        >
-
-        <button
-            onclick={async () => {
-                menuVisible = false;
-
-                const response = await deleteTrack(selected.id);
-                if (response.ok) {
-                    console.log(`Track with id ${selected} deleted`);
-                }
-                console.log(response.status);
-            }}>Action</button
-        >
+        <li>
+            <button
+                onclick={async () => {
+                    menuVisible = false;
+                    tracks.cache = { ...tracks.cache, [selected.id]: selected };
+                }}>Add to queue</button>
+        </li>
+        <li>
+            <button
+                onclick={async () => {
+                    menuVisible = false;
+                    const response = await deleteTrack(selected.id);
+                    if (response.ok) {
+                        console.log(`Track with id ${selected.id} deleted`);
+                    }
+                }}>Delete</button>
+        </li>
     </ul>
 {/if}
-
-<style>
-    .menu {
-        position: fixed; /* fixed so clientX/clientY coordinates work directly */
-        margin: 0;
-        padding: 4px 0;
-        list-style: none;
-        background: #313244;
-        border: 1px solid #45475a;
-        border-radius: 6px;
-        min-width: 160px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-        z-index: 1000;
-    }
-
-    .menu button {
-        padding: 8px 16px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-
-    .menu button:hover {
-        background: #45475a;
-    }
-</style>

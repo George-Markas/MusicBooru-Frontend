@@ -9,7 +9,6 @@
     setContext('openAlbum', open);
 </script>
 
-
 <div class="album-list">
     {#each albums as tracks (tracks) }
         <AlbumEntity tracks={tracks}/>
@@ -18,9 +17,11 @@
 
 <style>
     .album-list {
+        --tile-size: 200px;
+        justify-content: center;
         display: grid;
-        grid-template-columns: repeat(auto-fill, 140px);
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, var(--tile-size));
+        gap: 1.3rem;
         align-items: start;
     }
 </style>
