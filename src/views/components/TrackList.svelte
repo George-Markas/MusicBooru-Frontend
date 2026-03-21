@@ -1,10 +1,13 @@
 <script lang="ts">
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
     import { deleteTrack, type Track } from "../../lib/api/track";
     import TrackEntity from "./TrackEntity.svelte";
     import "../../assets/styles/track-list.css";
+    import { addTrack, getPlaylists, removeTrack, type Playlist, type PlaylistEntry } from "../../lib/api/playlist";
+    import type { SessionData } from "../../lib/api/auth";
 
     const tracks = getContext<{ cache: Record<string, Track> }>("trackCache");
+    const session = getContext<SessionData>("session");
 
     function portal(node: HTMLElement) {
         document.body.appendChild(node);
@@ -15,14 +18,38 @@
         };
     }
 
-    let { data } = $props<{
+    let { data, playlist = null, onRemove } = $props<{
         data: Track[];
+        playlist?: Playlist;
+        onRemove?: (id: string) => void;
     }>();
+
+    let localData = $state({ list: [...data] });
 
     let selected = $state({} as Track);
     let menuX = $state(0);
     let menuY = $state(0);
     let menuVisible = $state(false);
+
+    function getEntryId(trackId: string): string | undefined {
+        return playlist?.entries.find((entry: PlaylistEntry) => entry.trackId === trackId)?.id;
+    }
+
+    let playlists = $state({ data: [] as Playlist[] });
+    async function fetchPlaylistNames() {
+        try {
+            const response = await getPlaylists();
+            if (response.ok) {
+                playlists.data = response.data;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    onMount(() => { 
+        fetchPlaylistNames();
+    });
 </script>
 
 <svelte:window onclick={() => (menuVisible = false)} />
@@ -55,24 +82,51 @@
 
 {#if menuVisible}
     <ul class="menu" use:portal style="top: {menuY}px; left: {menuX}px;">
-        <li>
-            <button
-                onclick={async () => {
-                    menuVisible = false;
-                    tracks.cache = { ...tracks.cache, [selected.id]: selected };
-                }}>Add to queue</button
-            >
-        </li>
-        <li>
-            <button
-                onclick={async () => {
-                    menuVisible = false;
-                    const response = await deleteTrack(selected.id);
-                    if (response.ok) {
-                        console.log(`Track with id ${selected.id} deleted`);
-                    }
-                }}>Delete</button
-            >
-        </li>
+        <button
+            onclick={async () => {
+                menuVisible = false;
+                tracks.cache = { ...tracks.cache, [selected.id]: selected };
+            }}>Add to queue</button
+        >
+
+        {#each playlists.data as playlist (playlist) }            
+            <button onclick={async () => {
+                const response = await addTrack(playlist.id, selected.id);
+                if (response.ok) {
+                    console.log(`Track with id ${selected.id} added to playlist ${playlist.name}/${playlist.id}`);
+                }
+            }}>Add to '{playlist.name}'</button>
+        {/each}
+        
+        {#if playlist===null && session.role === 'ADMIN'}      
+            <button onclick={async () => { 
+                menuVisible = false;
+                const response = await deleteTrack(selected.id);
+                if (response.ok) {
+                    localData.list = localData.list.filter(t => t.id !== selected.id);
+                    onRemove();
+                    console.log(`Track with id ${selected.id} deleted`);
+                }
+                console.log(response.status);
+            }}>Delete from Collection</button>
+
+        {:else if playlist}
+            <button onclick={async () => { 
+                menuVisible = false;
+                const entryId = getEntryId(selected.id);
+                const response = await removeTrack(playlist.id, entryId ?? '');
+
+                if (response.ok) {
+                    localData.list = localData.list.filter(t => t.id !== selected.id);
+                    onRemove?.(selected.id);
+                    console.log(`Track with id ${entryId} deleted from playlist ${playlist.id}`);
+                }
+                console.log(response.status);
+            }}>Remove from playlist</button>
+        {/if}
     </ul>
 {/if}
+
+        
+
+        

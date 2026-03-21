@@ -4,6 +4,8 @@
     import type { AppState } from "../../lib/api/common";
     import RegisterModal from "./RegisterModal.svelte";
     import "../../assets/styles/sidebar.css";
+    import { uploadTrack } from "../../lib/api/track";
+    import PlaylistModal from "./PlaylistModal.svelte";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
@@ -14,6 +16,26 @@
             const response = await logout();
             if (response.ok) {
                 app.page = "login";
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleUpload(e: Event) {
+        const files = (e.target as HTMLInputElement).files;
+        if (!files || files.length === 0) return;
+
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append("file", files[i]);
+        }
+
+        try {
+            const response = await uploadTrack(formData);
+            console.log(response.status);
+            if (response.ok) {
+                console.log(response.data);
             }
         } catch (error) {
             console.error(error);
@@ -56,8 +78,11 @@
     <div class="sidebar__divider"></div>
 
     <div class="sidebar__footer">
+        <PlaylistModal/>
         {#if session.role === "ADMIN"}
             <RegisterModal showTrigger />
+            <input class="sidebar__input" type="file" accept="audio/m4a" onchange={handleUpload} multiple />
+
         {/if}
         <button class="sidebar__btn sidebar__btn--danger" onclick={handleLogout}>
             LOGOUT

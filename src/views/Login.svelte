@@ -1,14 +1,27 @@
 <script lang="ts">
     import { type AppState } from "../lib/api/common";
     import { getContext } from "svelte";
-    import { authenticate } from "../lib/api/auth";
+    import { authenticate, getSession, type SessionData } from "../lib/api/auth";
     import "../assets/styles/login.css";
 
     let username = $state("");
     let password = $state("");
     let error = $state("");
 
-    const app = getContext<{ page: AppState }>("app");
+    const app = getContext<{page: AppState }>('app');
+    const session = getContext<SessionData>("session");
+
+    async function renewSession() {
+        try {
+            const response = await getSession();
+            if (response.ok) {
+                session.username = response.data.username;
+                session.role = response.data.role;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
@@ -19,6 +32,7 @@
             if (response.ok) {
                 app.page = "home";
                 console.log(response.data);
+                renewSession();
             } else if (response.status === 401) {
                 error = "Incorrect username or password";
             }

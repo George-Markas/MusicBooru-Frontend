@@ -1,19 +1,16 @@
 <script lang="ts">
     import { type AppState, type ViewMode } from "../lib/api/common";
-    import { type Track, getTracks, uploadTrack } from "../lib/api/track";
+    import { type Track, getTracks} from "../lib/api/track";
 
     import { getContext, setContext, onMount } from "svelte";
-    import { logout, type SessionData } from "../lib/api/auth";
     import { persistedState } from "../lib/persisted.svelte";
 
     import TrackList from "./components/TrackList.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
-    import RegisterModal from "./components/RegisterModal.svelte";
     import "../assets/styles/home.css";
 
     const app = getContext<{ page: AppState }>("app");
-    const session = getContext<SessionData>("session");
 
     let tracks = $state({ list: [] as Track[] });
     setContext("tracklist", tracks);
@@ -36,39 +33,7 @@
     let view = persistedState<{ mode: ViewMode }>("view", { mode: "Track" });
 
     setContext("view", view.value);
-
-    async function handleLogout() {
-        try {
-            const response = await logout();
-            if (response.ok) {
-                app.page = "login";
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async function handleUpload(e: Event) {
-        const files = (e.target as HTMLInputElement).files;
-        if (!files || files.length === 0) return;
-
-        const formData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-            formData.append("file", files[i]);
-        }
-
-        try {
-            const response = await uploadTrack(formData);
-            console.log(response.status);
-            if (response.ok) {
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
+    
     onMount(async () => {
         try {
             const response = await getTracks();
@@ -84,13 +49,9 @@
 </script>
 
 <SearchBar/>
-<button onclick={handleLogout}>Logout</button>
-
 {#if view.value.mode === "Album"}
     <AlbumList {albums} />
 {:else}
     <TrackList data={tracks.list} />
 {/if}
 
-<input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
-<RegisterModal/>

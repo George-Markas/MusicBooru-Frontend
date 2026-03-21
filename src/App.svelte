@@ -7,7 +7,7 @@
     import { getSession, type SessionData } from "./lib/api/auth";
     import type { Track } from "./lib/api/track";
     import TrackPlayer from "./views/components/Player.svelte";
-    // import Playlist from "./views/Playlist.svelte";
+    import Playlist from "./views/Playlist.svelte";
     import Sidebar from "./views/components/Sidebar.svelte";
     import { persistedState } from "./lib/persisted.svelte";
 
@@ -45,8 +45,8 @@
 {:else}
     {#if app.value.page === "home"}
         <Home />
-    <!-- {:else if app.value.page === "playlists"}
-        <Playlist/> -->
+    {:else if app.value.page === "playlists"}
+        <Playlist/>
     {/if}
     <TrackPlayer />
     <Sidebar/>

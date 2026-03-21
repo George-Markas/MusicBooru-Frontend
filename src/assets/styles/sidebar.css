@@ -77,6 +77,42 @@
     width: 100%;
 }
 
+.sidebar__input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #666;
+    background: transparent;
+    border: 1px solid #222;
+    border-radius: 2px;
+    width: 100%;
+    outline: none;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+}
+
+.sidebar__input::file-selector-button {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #666;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #222;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.sidebar__input::file-selector-button:hover {
+    color: #fff;
+    border-right-color: #666;
+}
+
 .sidebar__btn:hover {
     color: #e8e8e8;
     border-color: #444;
