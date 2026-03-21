@@ -20,7 +20,7 @@
                 app.page = "home";
                 console.log(response.data);
             } else if (response.status === 401) {
-                error = "Incorrect username or password.";
+                error = "Incorrect username or password";
             }
         } catch (error) {
             console.error(error);
