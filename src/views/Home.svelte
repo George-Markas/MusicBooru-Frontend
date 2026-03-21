@@ -10,6 +10,7 @@
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
     import RegisterModal from "./components/RegisterModal.svelte";
+    import "../assets/styles/home.css";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
