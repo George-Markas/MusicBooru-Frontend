@@ -31,7 +31,7 @@
                 type="text"
                 name="Playlist name field"
                 bind:value={playlistData.name}
-                placeholder="Username"
+                placeholder="List Name..."
             />
         </label>
         <button type="submit">Submit</button>
