@@ -23,6 +23,7 @@
     .album-list {
         --tile-size: 200px;
         justify-content: center;
+        padding-top: 15px;
         display: grid;
         grid-template-columns: repeat(auto-fill, var(--tile-size));
         gap: 1.3rem;
