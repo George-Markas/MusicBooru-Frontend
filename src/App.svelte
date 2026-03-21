@@ -6,14 +6,10 @@
     import Home from "./views/Home.svelte";
     import { getSession, type SessionData } from "./lib/api/auth";
     import type { Track } from "./lib/api/track";
-    import Playlist from "./views/Playlist.svelte";
-    import Sidebar from "./views/components/Sidebar.svelte";
-    import { persistedState } from "./lib/persisted.svelte";
     import TrackPlayer from "./views/components/Player.svelte";
 
-    // const app = $state({ page: "loading" as AppState });
-    let app = persistedState<{ page: AppState }>("app", { page: "loading" });
-    setContext("app", app.value);
+    const app = $state({ page: "loading" as AppState });
+    setContext("app", app);
 
     const session = $state({ username: "", role: "" } as SessionData);
     setContext("session", session);
@@ -28,11 +24,11 @@
         try {
             const response = await getSession();
             if (response.ok) {
-                app.value.page = "home";
+                app.page = "home";
                 session.username = response.data.username;
                 session.role = response.data.role;
             } else {
-                app.value.page = "login";
+                app.page = "login";
             }
         } catch (error) {
             console.error(error);
@@ -40,14 +36,12 @@
     });
 </script>
 
-{#if app.value.page === "login"}
+{#if app.page === "login"}
     <Login />
 {:else}
-    {#if app.value.page === "home"}
+    {#if app.page === "home"}
         <Home />
-    {:else if app.value.page === "playlists"}
-        <Playlist/>
+        <!-- {:else TODO PLAYLISTS} -->
     {/if}
     <TrackPlayer />
-    <Sidebar/>
 {/if}

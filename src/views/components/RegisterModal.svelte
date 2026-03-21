@@ -1,6 +1,5 @@
 <script lang="ts">
     import { register, type RegisterRequest } from "../../lib/api/auth";
-    import "../../assets/styles/register-modal.css";
 
     let dialog: HTMLDialogElement;
 
@@ -24,40 +23,30 @@
     }
 </script>
 
-<button class="register-trigger" onclick={() => dialog.showModal()}>
-    REGISTER USER
-</button>
+<button onclick={() => dialog.showModal()}>Register User</button>
 
-<dialog bind:this={dialog} class="register-dialog">
-    <div class="register-dialog__header">
-        <span class="register-dialog__title">REGISTER USER</span>
-        <button class="register-dialog__close" onclick={() => dialog.close()}>✕</button>
-    </div>
-
-    <form onsubmit={handleSubmit} class="register-form">
-        <label class="register-form__label">
-            <span class="register-form__label-text">USERNAME</span>
+<dialog bind:this={dialog}>
+    <form onsubmit={handleSubmit}>
+        <label>
+            Username
             <input
                 type="text"
                 name="register username field"
                 bind:value={registerData.username}
-                placeholder="USERNAME"
-                class="register-form__input"
+                placeholder="Username"
             />
         </label>
-
-        <label class="register-form__label">
-            <span class="register-form__label-text">PASSWORD</span>
+        <label>
+            Password
             <input
-                type="password"
+                type="text"
                 name="register password field"
                 bind:value={registerData.password}
-                placeholder="PASSWORD"
-                class="register-form__input"
+                placeholder="Password"
             />
         </label>
-
-        <label class="register-form__checkbox-label">
+        <label>
+            Admin
             <input
                 type="checkbox"
                 checked={registerData.role === "ADMIN"}
@@ -65,11 +54,9 @@
                     (registerData.role = (e.target as HTMLInputElement).checked
                         ? "ADMIN"
                         : "USER")}
-                class="register-form__checkbox"
             />
-            <span class="register-form__label-text">ADMIN</span>
         </label>
-
-        <button type="submit" class="register-form__submit">SUBMIT</button>
+        <button type="submit">Submit</button>
     </form>
+    <button onclick={() => dialog.close()}>✕</button>
 </dialog>

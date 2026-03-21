@@ -2,41 +2,26 @@
     import { getTrackArt, type Track } from "../../lib/api/track";
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
-    import { getIcon, type Playlist } from "../../lib/api/playlist";
     import "../../assets/styles/album-entity.css";
 
-    let { tracks, playlist=null} = $props<{ tracks: Track[]; playlist?: Playlist }>();
+    let { tracks } = $props<{ tracks: Track[] }>();
     let cover = $state<string>("");
-    let localData = $state({ list: [...tracks] });
     let albumElement = $state<HTMLDivElement | null>(null);
 
     const trackCache = getContext<{ cache: Record<string, Track> }>("trackCache");
 
     let open = getContext<{ name: string }>("openAlbum");
-    let isOpen = $derived(open.name === (playlist?.name ?? localData.list[0]?.album));
+    let isOpen = $derived(open.name === tracks[0].album);
 
     async function loadArt() {
         try {
-            const response = await getTrackArt(localData.list[0].id);
+            const response = await getTrackArt(tracks[0].id);
             if (response.ok) {
                 cover = URL.createObjectURL(response.data);
-            } 
+            }
         } catch (error) {
             console.log(error);
         }
-    }
-    
-    async function loadListArt() {
-        try {
-            const response = await getIcon(playlist.id);
-            if (response.data !== undefined) { cover = URL.createObjectURL(response.data); }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    function onRemove(id: string) {
-        localData.list = localData.list.filter(t => t.id !== id);
     }
 
     function handleOutsideClick(e: MouseEvent) {
@@ -46,8 +31,7 @@
     }
 
     onMount(async () => {
-        if (playlist !== null) { loadListArt(); }
-        else { loadArt(); }
+        loadArt();
     });
 
     onDestroy(async () => {
@@ -64,16 +48,16 @@
         class="album__button"
         ondblclick={() =>
             (trackCache.cache = Object.fromEntries(
-                localData.list.map((track: Track) => [track.id, track]),
+                tracks.map((track: Track) => [track.id, track]),
             ))}
-        onclick={() => (open.name = playlist?.name ?? localData.list[0]?.album)}
+        onclick={() => (open.name = open.name === tracks[0].album ? "" : tracks[0].album)}
     >
-        <img src={cover} alt="cover" />
-        <span>{playlist?.name ?? localData.list[0]?.album}</span>
+        <img src={cover} alt="cover" class="album__cover" />
     </button>
 
-    <div class="popup" class:open={isOpen}>
-        <TrackList data={localData.list} playlist={playlist} {onRemove}/>
+    <div class="album__info">
+        <span class="album__name">{tracks[0].album}</span>
+        <span class="album__artist">{tracks[0].artist}</span>
     </div>
 
     {#if isOpen}
