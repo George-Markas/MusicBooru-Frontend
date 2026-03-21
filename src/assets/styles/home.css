@@ -3,3 +3,13 @@
 body {
     background: #0f0f0f;
 }
+
+.logo {
+    font-family: "Poiret One", sans-serif;
+    font-weight: 400;
+    font-size: 20pt;
+    font-weight: 600;
+    color: #c8ff00;
+    letter-spacing: 0.25em;
+    flex-shrink: 0;
+}

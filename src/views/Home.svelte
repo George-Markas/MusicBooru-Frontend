@@ -83,7 +83,7 @@
     });
 </script>
 
-<SearchBar />
+<SearchBar/>
 <button onclick={handleLogout}>Logout</button>
 
 {#if view.value.mode === "Album"}
@@ -92,9 +92,5 @@
     <TrackList data={tracks.list} />
 {/if}
 
-{#if session.role === "ADMIN"}
-    <p>Hello ADMIN!</p>
-{/if}
-
 <input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
-<RegisterModal />
+<RegisterModal/>

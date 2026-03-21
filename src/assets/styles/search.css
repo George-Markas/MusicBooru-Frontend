@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+.searchbar {
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+}
+
+/* Search input wrapper */
+.searchbar__search {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    background: #0f0f0f;
+    border: 2px solid #2a2a2a;
+    border-radius: 2px;
+    padding: 0.35rem 0.6rem;
+    transition: border-color 0.15s;
+}
+
+.searchbar__search:focus-within {
+    border-color: #444;
+}
+
+.searchbar__icon {
+    width: 13px;
+    height: 13px;
+    color: #444;
+    flex-shrink: 0;
+    transition: color 0.15s;
+}
+
+.searchbar__search:focus-within .searchbar__icon {
+    color: #888;
+}
+
+.searchbar__input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: #e8e8e8;
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+}
+
+.searchbar__input::placeholder {
+    color: #333;
+    letter-spacing: 0.08em;
+}
+
+/* Hide the browser's native clear button on search inputs */
+.searchbar__input::-webkit-search-cancel-button {
+    display: none;
+}
+
+/* Right side controls */
+.searchbar__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Sort label + select */
+.searchbar__sort {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.searchbar__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #444;
+}
+
+.searchbar__select {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #888;
+    background: #0f0f0f;
+    border: 1px solid #2a2a2a;
+    border-radius: 2px;
+    padding: 0.2rem 0.4rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    /* Remove default arrow on some browsers */
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.searchbar__select:hover {
+    border-color: #444;
+    color: #e8e8e8;
+}
+
+.searchbar__select option {
+    
+    background: #0f0f0f;
+    color: #e8e8e8;
+}
+
+/* View toggle buttons */
+.searchbar__view {
+    color: #444;
+    display: flex;
+    gap: 0.25rem;
+}
+
+.searchbar__view-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: #444;
+    background: none;
+    border: 1px solid #222;
+    border-radius: 2px;
+    padding: 0.2rem 0.45rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.searchbar__view-btn:hover {
+    color: #888;
+    border-color: #333;
+}
+
+.searchbar__view-btn--active {
+    color: #c8ff00;
+    border-color: #c8ff00;
+    background: rgba(200, 255, 0, 0.06);
+}
