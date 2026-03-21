@@ -2,12 +2,25 @@
     import { type AppState } from '../lib/api/common';
 
     import { getContext } from 'svelte';
-    import {authenticate} from '../lib/api/auth';
+    import {authenticate, getSession, type SessionData} from '../lib/api/auth';
 
     let username = $state('');
     let password = $state('');
 
     const app = getContext<{page: AppState }>('app');
+    const session = getContext<SessionData>("session");
+
+    async function renewSession() {
+        try {
+            const response = await getSession();
+            if (response.ok) {
+                session.username = response.data.username;
+                session.role = response.data.role;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
@@ -15,7 +28,11 @@
         password = password.trim();
         try {
             const response = await authenticate({username, password});
-            if (response.ok) {app.page = 'home'; console.log(response.data);}
+            if (response.ok) {
+                app.page = 'home'; 
+                console.log(response.data);
+                renewSession();
+            }
         } catch (error) {
             console.error(error);
         }

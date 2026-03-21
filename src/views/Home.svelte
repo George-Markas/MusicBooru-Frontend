@@ -3,13 +3,12 @@
     import { type Track, getTracks, uploadTrack } from "../lib/api/track";
 
     import { getContext, setContext, onMount } from "svelte";
-    import { logout, type SessionData } from "../lib/api/auth";
+    import { type SessionData } from "../lib/api/auth";
     import { persistedState } from "../lib/persisted.svelte";
 
     import TrackList from "./components/TrackList.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
-    import RegisterModal from "./components/RegisterModal.svelte";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
@@ -40,18 +39,6 @@
     function onRemove(id: string) {
         console.log("Called!");
         tracks.list = tracks.list.filter(t => t.id !== id);
-    }
-
-    async function handleLogout() {
-        try {
-            const response = await logout();
-            if (response.ok) {
-                app.page = "login";
-                console.log(response.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
     }
 
     async function handleUpload(e: Event) {
@@ -90,7 +77,6 @@
 
 <p>88 == Welcome to musicbooru == 88</p>
 <SearchBar/>
-<button onclick={handleLogout}>Logout</button>
 
 {#if view.value.mode === "Album"}
     <AlbumList albums={albums} />
@@ -103,4 +89,3 @@
 {/if}
 
 <input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
-<RegisterModal />
