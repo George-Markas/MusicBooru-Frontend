@@ -63,7 +63,7 @@
             onclick={async () => {
                 menuVisible = false;
                 tracks.cache = { ...tracks.cache, [selected.id]: selected };
-            }}>Add to current queue...</button
+            }}>Add to queue</button
         >
 
         {#each playlists.data as playlist (playlist) }            
@@ -99,7 +99,7 @@
                     console.log(`Track with id ${entryId} deleted from playlist ${playlist.id}`);
                 }
                 console.log(response.status);
-            }}>Remove from Playlist</button>
+            }}>Remove from playlist</button>
         {/if}
 
     </ul>
