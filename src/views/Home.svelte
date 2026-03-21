@@ -33,7 +33,6 @@
     setContext("streamTrack", streamTrack);
 
     let view = persistedState<{ mode: ViewMode }>("view", { mode: "Track" });
-
     setContext("view", view.value);
 
     async function handleLogout() {

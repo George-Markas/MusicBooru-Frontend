@@ -28,7 +28,7 @@
     async function loadListArt() {
         try {
             const response = await getIcon(playlist.id);
-            cover = URL.createObjectURL(response.data);
+            if (response.data !== undefined) {cover = URL.createObjectURL(response.data);}
         } catch (error) {
             console.error(error);
         }

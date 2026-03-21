@@ -55,7 +55,7 @@ export async function getIcon(id: string) : Promise<Result<Blob>> {
     const response = await api<Blob>(path, {
         method: 'GET',
         headers: {'Accept': 'image/jpeg'}
-    }, {as: 'blob'});
+    }, {as: 'blob', allReturn: true});
 
     return response;
 }

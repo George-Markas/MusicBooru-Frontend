@@ -9,9 +9,11 @@
     import TrackPlayer from "./views/components/TrackPlayer.svelte";
     import Playlist from "./views/Playlist.svelte";
     import Sidebar from "./views/components/Sidebar.svelte";
+    import { persistedState } from "./lib/persisted.svelte";
 
-    const app = $state({ page: "loading" as AppState });
-    setContext("app", app);
+    // const app = $state({ page: "loading" as AppState });
+    let app = persistedState<{ page: AppState }>("app", { page: "loading" });
+    setContext("app", app.value);
 
     const session = $state({ username: "", role: "" } as SessionData);
     setContext("session", session);
@@ -26,11 +28,11 @@
         try {
             const response = await getSession();
             if (response.ok) {
-                app.page = "home";
+                app.value.page = "home";
                 session.username = response.data.username;
                 session.role = response.data.role;
             } else {
-                app.page = "login";
+                app.value.page = "login";
             }
         } catch (error) {
             console.error(error);
@@ -38,12 +40,12 @@
     });
 </script>
 
-{#if app.page === "login"}
+{#if app.value.page === "login"}
     <Login />
 {:else}
-    {#if app.page === "home"}
+    {#if app.value.page === "home"}
         <Home />
-    {:else if app.page === "playlists"}
+    {:else if app.value.page === "playlists"}
         <Playlist/>
     {/if}
     <TrackPlayer />
