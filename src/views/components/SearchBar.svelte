@@ -2,7 +2,7 @@
     import { getContext } from "svelte";
     import type { SortMode, ViewMode } from "../../lib/api/common";
     import { searchTracks, type Track } from "../../lib/api/track";
-    import "../../assets/styles/search.css";
+    import "../../assets/styles/search-bar.css";
 
     let debounceTimer: ReturnType<typeof setTimeout>;
 
