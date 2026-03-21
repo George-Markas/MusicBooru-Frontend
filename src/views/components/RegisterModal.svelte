@@ -3,6 +3,7 @@
     import "../../assets/styles/register-modal.css";
 
     let dialog: HTMLDialogElement;
+    let { showTrigger = false } = $props<{ showTrigger?: boolean }>();
 
     let registerData = $state<RegisterRequest>({
         username: "",
@@ -24,9 +25,11 @@
     }
 </script>
 
-<button class="register-trigger" onclick={() => dialog.showModal()}>
-    REGISTER USER
-</button>
+{#if showTrigger}
+    <button class="register-trigger" onclick={() => dialog.showModal()}>
+        REGISTER USER
+    </button>
+{/if}
 
 <dialog bind:this={dialog} class="register-dialog">
     <div class="register-dialog__header">

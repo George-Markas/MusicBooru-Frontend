@@ -57,7 +57,7 @@
 
     <div class="sidebar__footer">
         {#if session.role === "ADMIN"}
-            <RegisterModal />
+            <RegisterModal showTrigger />
         {/if}
         <button class="sidebar__btn sidebar__btn--danger" onclick={handleLogout}>
             LOGOUT
