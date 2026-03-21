@@ -8,7 +8,6 @@
     width: 100%;
 }
 
-/* Search input wrapper */
 .searchbar__search {
     display: flex;
     align-items: center;
@@ -54,12 +53,10 @@
     letter-spacing: 0.08em;
 }
 
-/* Hide the browser's native clear button on search inputs */
 .searchbar__input::-webkit-search-cancel-button {
     display: none;
 }
 
-/* Right side controls */
 .searchbar__controls {
     display: flex;
     align-items: center;
@@ -67,7 +64,6 @@
     flex-shrink: 0;
 }
 
-/* Sort label + select */
 .searchbar__sort {
     display: flex;
     align-items: center;
@@ -83,7 +79,7 @@
 
 .searchbar__select {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     color: #888;
@@ -110,7 +106,6 @@
     color: #e8e8e8;
 }
 
-/* View toggle buttons */
 .searchbar__view {
     color: #444;
     display: flex;
@@ -119,7 +114,7 @@
 
 .searchbar__view-btn {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.1em;
     color: #444;
