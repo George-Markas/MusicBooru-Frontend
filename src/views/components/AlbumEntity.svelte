@@ -3,14 +3,14 @@
     import { getContext, onDestroy, onMount } from "svelte";
     import TrackList from "./TrackList.svelte";
     import { getIcon, type Playlist } from "../../lib/api/playlist";
+    import "../../assets/styles/album-entity.css";
 
     let { tracks, playlist=null} = $props<{ tracks: Track[]; playlist?: Playlist }>();
     let cover = $state<string>("");
     let localData = $state({ list: [...tracks] });
+    let albumElement = $state<HTMLDivElement | null>(null);
 
-    const trackCache = getContext<{ cache: Record<string, Track> }>(
-        "trackCache",
-    );
+    const trackCache = getContext<{ cache: Record<string, Track> }>("trackCache");
 
     let open = getContext<{ name: string }>("openAlbum");
     let isOpen = $derived(open.name === (playlist?.name ?? localData.list[0]?.album));
@@ -39,6 +39,12 @@
         localData.list = localData.list.filter(t => t.id !== id);
     }
 
+    function handleOutsideClick(e: MouseEvent) {
+        if (isOpen && albumElement && !albumElement.contains(e.target as Node)) {
+            open.name = "";
+        }
+    }
+
     onMount(async () => {
         if (playlist !== null) { loadListArt(); }
         else { loadArt(); }
@@ -46,15 +52,16 @@
 
     onDestroy(async () => {
         if (cover) {
-            console.log("Track gone");
             URL.revokeObjectURL(cover);
         }
     });
 </script>
 
-<div class="album">
+<svelte:window onclick={handleOutsideClick} />
+
+<div class="album" bind:this={albumElement}>
     <button
-        class="button"
+        class="album__button"
         ondblclick={() =>
             (trackCache.cache = Object.fromEntries(
                 localData.list.map((track: Track) => [track.id, track]),
@@ -68,47 +75,12 @@
     <div class="popup" class:open={isOpen}>
         <TrackList data={localData.list} playlist={playlist} {onRemove}/>
     </div>
+
+    {#if isOpen}
+        <div class="popup">
+            <div class="popup__inner">
+                <TrackList data={tracks} />
+            </div>
+        </div>
+    {/if}
 </div>
-
-<style>
-    .button {
-        position: relative;
-        padding: 0;
-        border: none;
-        cursor: pointer;
-        width: 140px;
-        height: 140px;
-        overflow: hidden;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    span {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 4px;
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        text-align: center;
-    }
-
-    .album {
-        display: flex-start;
-        flex-direction: column;
-    }
-
-    .popup {
-        max-height: 0;
-        overflow: hidden;
-    }
-
-    .popup.open {
-        max-height: 300px;
-    }
-</style>

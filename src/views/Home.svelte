@@ -9,6 +9,8 @@
     import TrackList from "./components/TrackList.svelte";
     import SearchBar from "./components/SearchBar.svelte";
     import AlbumList from "./components/AlbumList.svelte";
+    import RegisterModal from "./components/RegisterModal.svelte";
+    import "../assets/styles/home.css";
 
     const app = getContext<{ page: AppState }>("app");
     const session = getContext<SessionData>("session");
@@ -75,17 +77,14 @@
     });
 </script>
 
-<p>88 == Welcome to musicbooru == 88</p>
 <SearchBar/>
+<button onclick={handleLogout}>Logout</button>
 
 {#if view.value.mode === "Album"}
-    <AlbumList albums={albums} />
+    <AlbumList {albums} />
 {:else}
-    <TrackList data={tracks.list} {onRemove} />
-{/if}
-
-{#if session.role === "ADMIN"}
-    <p>Hello ADMIN!</p>
+    <TrackList data={tracks.list} />
 {/if}
 
 <input type="file" accept="audio/m4a" onchange={handleUpload} multiple />
+<RegisterModal/>
